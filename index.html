@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Flatwriter (por preguntas)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    label, input {
+      display: block;
+      margin-bottom: 10px;
+    }
+    #canvas {
+      border: 2px dashed #888;
+      width: 600px;
+      height: 400px;
+      position: relative;
+      background-color: #fff;
+      margin-top: 20px;
+    }
+    .cuarto {
+      width: 100px;
+      height: 100px;
+      background-color: #dfe6e9;
+      border: 1px solid #636e72;
+      text-align: center;
+      line-height: 100px;
+      position: absolute;
+    }
+    .bano {
+      width: 60px;
+      height: 60px;
+      background-color: #74b9ff;
+      border: 1px solid #0984e3;
+      text-align: center;
+      line-height: 60px;
+      position: absolute;
+      font-size: 12px;
+    }
+    .cocina {
+      width: 140px;
+      height: 100px;
+      background-color: #fab1a0;
+      border: 1px solid #e17055;
+      text-align: center;
+      line-height: 100px;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mini Flatwriter (modo preguntas)</h1>
+
+  <form id="formulario">
+    <label for="cuartos">¿Cuántos cuartos?</label>
+    <input type="number" id="cuartos" name="cuartos" min="0" value="1">
+
+    <label for="banos">¿Cuántos baños?</label>
+    <input type="number" id="banos" name="banos" min="0" value="1">
+
+    <label for="cocinas">¿Cuántas cocinas?</label>
+    <input type="number" id="cocinas" name="cocinas" min="0" value="1">
+
+    <button type="submit">Generar plano</button>
+  </form>
+
+  <div id="canvas"></div>
+
+  <script>
+    const form = document.getElementById('formulario');
+    const canvas = document.getElementById('canvas');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      canvas.innerHTML = '';
+
+      const cuartos = parseInt(document.getElementById('cuartos').value);
+      const banos = parseInt(document.getElementById('banos').value);
+      const cocinas = parseInt(document.getElementById('cocinas').value);
+
+      let x = 0, y = 0, count = 0;
+
+      const addRoom = (tipo, cantidad, clase, w, h) => {
+        for (let i = 0; i < cantidad; i++) {
+          const div = document.createElement('div');
+          div.className = clase;
+          div.textContent = tipo;
+          div.style.left = `${x}px`;
+          div.style.top = `${y}px`;
+          canvas.appendChild(div);
+
+          x += parseInt(w) + 10;
+          count++;
+          if (x + parseInt(w) > canvas.clientWidth) {
+            x = 0;
+            y += parseInt(h) + 10;
+          }
+        }
+      };
+
+      addRoom('Cuarto', cuartos, 'cuarto', 100, 100);
+      addRoom('Baño', banos, 'bano', 60, 60);
+      addRoom('Cocina', cocinas, 'cocina', 140, 100);
+    });
+  </script>
+</body>
+</html>
