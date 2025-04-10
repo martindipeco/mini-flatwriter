@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Flatwriter</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    #toolbar {
+      margin-bottom: 10px;
+    }
+    .module {
+      display: inline-block;
+      padding: 10px;
+      margin-right: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      cursor: grab;
+    }
+    #canvas {
+      border: 2px dashed #888;
+      width: 600px;
+      height: 400px;
+      position: relative;
+      background-color: #fff;
+    }
+    .placed-module {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-color: #dfe6e9;
+      border: 1px solid #636e72;
+      text-align: center;
+      line-height: 100px;
+      cursor: move;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mini Flatwriter</h1>
+  <div id="toolbar">
+    <div class="module" draggable="true" data-type="Cocina">Cocina</div>
+    <div class="module" draggable="true" data-type="Baño">Baño</div>
+    <div class="module" draggable="true" data-type="Dormitorio">Dormitorio</div>
+  </div>
+
+  <div id="canvas"></div>
+
+  <script>
+    const modules = document.querySelectorAll('.module');
+    const canvas = document.getElementById('canvas');
+
+    modules.forEach(mod => {
+      mod.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', e.target.dataset.type);
+      });
+    });
+
+    canvas.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+
+    canvas.addEventListener('drop', e => {
+      e.preventDefault();
+      const type = e.dataTransfer.getData('text/plain');
+      const newMod = document.createElement('div');
+      newMod.className = 'placed-module';
+      newMod.textContent = type;
+      newMod.style.left = `${e.offsetX - 50}px`;
+      newMod.style.top = `${e.offsetY - 50}px`;
+
+      // Permitir mover luego de colocar
+      newMod.setAttribute('draggable', true);
+      newMod.addEventListener('dragstart', e2 => {
+        e2.dataTransfer.setData('text/plain', 'move');
+        e2.dataTransfer.setDragImage(new Image(), 0, 0);
+        newMod.classList.add('dragging');
+      });
+      newMod.addEventListener('dragend', () => {
+        newMod.classList.remove('dragging');
+      });
+
+      canvas.appendChild(newMod);
+    });
+  </script>
+</body>
+</html>
